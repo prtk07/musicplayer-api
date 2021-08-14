@@ -3,6 +3,7 @@ const {
   UserExists,
   encryptPassword,
   tokenGenerator,
+  checkPassword,
 } = require("./users.utils");
 
 async function signup(req, res, next) {
@@ -26,9 +27,20 @@ async function signup(req, res, next) {
   return next();
 }
 
-function login(req, res, next) {
+async function login(req, res, next) {
   const { email, password } = req.body;
-  console.log("login");
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return next(new Error("User does not exists"));
+
+    const passwordMatch = await checkPassword(password, user.hash);
+    if (passwordMatch) {
+      res.locals.data = { token: tokenGenerator(user) };
+    } else return next(new Error("password does not match"));
+  } catch (e) {
+    return next(e);
+  }
+  return next();
 }
 
 module.exports = {
