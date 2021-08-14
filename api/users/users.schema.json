@@ -1,0 +1,6 @@
+{
+  "name": { "type": "string" },
+  "email": { "type": "string" },
+  "hash": { "type": "string" },
+  "phone": { "type": "string" }
+}
