@@ -35,9 +35,14 @@ function tokenGenerator(user) {
   );
 }
 
+function tokenDecrypt(token) {
+  return jwt.decode(token);
+}
+
 module.exports = {
   UserExists,
   encryptPassword,
   checkPassword,
   tokenGenerator,
+  tokenDecrypt,
 };

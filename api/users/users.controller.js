@@ -4,6 +4,7 @@ const {
   encryptPassword,
   tokenGenerator,
   checkPassword,
+  tokenDecrypt,
 } = require("./users.utils");
 
 async function signup(req, res, next) {
@@ -27,6 +28,18 @@ async function signup(req, res, next) {
   return next();
 }
 
+async function getUserDetails(req, res, next) {
+  const token = req.headers.authorization.split(" ")[1];
+  const { email } = tokenDecrypt(token);
+  try {
+    const user = await User.findOne({ email });
+    res.locals.data = { ...user };
+  } catch (e) {
+    return next(e);
+  }
+  return next();
+}
+
 async function login(req, res, next) {
   const { email, password } = req.body;
   try {
@@ -46,4 +59,5 @@ async function login(req, res, next) {
 module.exports = {
   signup,
   login,
+  getUserDetails,
 };
