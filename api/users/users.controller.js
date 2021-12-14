@@ -60,8 +60,27 @@ async function login(req, res, next) {
   return next();
 }
 
+async function verifyToken(req, res, next) {
+  const { token } = req.params;
+  const { email, name } = tokenDecrypt(token);
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return next(new Error("Token Invalid"));
+
+    if (user) {
+      user.isVerified = true;
+      await user.save();
+    }
+  } catch (e) {
+    return next(e);
+  }
+  return next();
+}
+
 module.exports = {
   signup,
   login,
   getUserDetails,
+  verifyToken,
 };

@@ -6,5 +6,6 @@ const controllers = require("./users.controller");
 router.get("/", controllers.getUserDetails, responseHandler);
 router.post("/login", controllers.login, responseHandler);
 router.post("/signup", controllers.signup, responseHandler);
+router.get("/verify/:token", controllers.verifyToken, responseHandler);
 
 module.exports = router;
