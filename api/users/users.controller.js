@@ -1,3 +1,4 @@
+const { sendVerificationMail } = require("../../integrations/sendGrid");
 const User = require("./users.model");
 const {
   UserExists,
@@ -15,16 +16,19 @@ async function signup(req, res, next) {
     email,
     phone,
     hash,
+    isVerified: false,
   });
 
   try {
     await UserExists(email);
 
     await user.save();
+    sendVerificationMail(user, tokenGenerator(user));
   } catch (e) {
     return next(e);
   }
-  res.locals.data = { token: tokenGenerator(user) };
+
+  // res.locals.data = { token: tokenGenerator(user) };
   return next();
 }
 
