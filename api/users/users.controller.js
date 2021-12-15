@@ -1,4 +1,7 @@
-const { sendVerificationMail } = require("../../integrations/sendGrid");
+const {
+  sendVerificationMail,
+  sendForgotPasswordMail,
+} = require("../../integrations/sendGrid");
 const User = require("./users.model");
 const {
   UserExists,
@@ -52,6 +55,8 @@ async function login(req, res, next) {
 
     const passwordMatch = await checkPassword(password, user.hash);
     if (passwordMatch) {
+      if (!user.isVerified) return next(new Error("User not verified"));
+
       res.locals.data = { token: tokenGenerator(user) };
     } else return next(new Error("password does not match"));
   } catch (e) {
@@ -78,9 +83,28 @@ async function verifyToken(req, res, next) {
   return next();
 }
 
+async function forgotPassword(req, res, next) {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return next(new Error("User does not exist"));
+
+    if (user && user.isVerified) {
+      sendForgotPasswordMail(user, tokenGenerator(user));
+      res.locals.data = {
+        message: "Reset Link sent to User's Email: " + user.email,
+      };
+    } else return next(new Error("User is not Verified"));
+  } catch (e) {
+    return next(new Error("Something went wrong"));
+  }
+  return next();
+}
+
 module.exports = {
   signup,
   login,
   getUserDetails,
   verifyToken,
+  forgotPassword,
 };

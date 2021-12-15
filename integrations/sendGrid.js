@@ -27,6 +27,32 @@ const sendVerificationMail = (user, token) => {
     });
 };
 
+const sendForgotPasswordMail = (user, token) => {
+  const msg = {
+    to: { name: user.name, email: user.email },
+    from: { name: process.env.SENDER_NAME, email: process.env.SENDER_EMAIL },
+    subject: "Reset Password Email",
+    html: `<html>
+        <head>
+        </head>
+        <body>
+            <h1>Click Here to Change Password</h1>
+            <p><a href="${process.env.LOCALHOST_ENDPOINT}user/resetPass/${token}">VerifyEmail</a></p>
+        </body>
+      <html>`,
+  };
+
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Reset Password Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
 module.exports = {
   sendVerificationMail,
+  sendForgotPasswordMail,
 };
