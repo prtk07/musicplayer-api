@@ -5,14 +5,14 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const sendVerificationMail = (user, token) => {
   const msg = {
     to: { name: user.name, email: user.email },
-    from: { name: "Prateek Verma", email: "prateekverma70@gmail.com" },
+    from: { name: process.env.SENDER_NAME, email: process.env.SENDER_EMAIL },
     subject: "Verfication Email",
     html: `<html>
         <head>
         </head>
         <body>
             <h1>Click Here to Verify</h1>
-            <p><a href="http://localhost:8080/user/verify/${token}">VerifyEmail</a></p>
+            <p><a href="${process.env.API_ENDPOINT}user/verify/${token}">VerifyEmail</a></p>
         </body>
       <html>`,
   };
