@@ -37,7 +37,7 @@ const sendForgotPasswordMail = (user, token) => {
         </head>
         <body>
             <h1>Click Here to Change Password</h1>
-            <p><a href="${process.env.LOCALHOST_ENDPOINT}user/reset/${token}">VerifyEmail</a></p>
+            <p><a href="${process.env.API_ENDPOINT}user/reset/${token}">VerifyEmail</a></p>
         </body>
       <html>`,
   };
