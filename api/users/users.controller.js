@@ -26,7 +26,7 @@ async function signup(req, res, next) {
     await UserExists(email);
 
     await user.save();
-    sendVerificationMail(user, tokenGenerator(user));
+    sendVerificationMail(user, tokenGenerator(user, [10, "minutes"]));
   } catch (e) {
     return next(e);
   }
@@ -90,7 +90,7 @@ async function forgotPassword(req, res, next) {
     if (!user) return next(new Error("User does not exist"));
 
     if (user && user.isVerified) {
-      sendForgotPasswordMail(user, tokenGenerator(user));
+      sendForgotPasswordMail(user, tokenGenerator(user, [10, "minutes"]));
       res.locals.data = {
         message: "Reset Link sent to User's Email: " + user.email,
       };

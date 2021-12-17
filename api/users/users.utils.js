@@ -23,13 +23,15 @@ async function checkPassword(plaintext, hash) {
   return await bcrypt.compare(plaintext, hash);
 }
 
-function tokenGenerator(user) {
+function tokenGenerator(user, time = [10, "days"]) {
   return jwt.sign(
     {
       name: user.name,
       email: user.email,
       iat: moment().unix(),
-      exp: moment().add(10, "days").unix(),
+      exp: moment()
+        .add(...time)
+        .unix(),
     },
     process.env.TOKEN_SECRET
   );
