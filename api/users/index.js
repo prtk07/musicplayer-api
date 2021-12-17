@@ -8,6 +8,6 @@ router.post("/login", controllers.login, responseHandler);
 router.post("/signup", controllers.signup, responseHandler);
 router.get("/verify/:token", controllers.verifyToken, responseHandler);
 router.post("/reset", controllers.forgotPassword, responseHandler);
-//TODO route to handle reset password link
+router.post("/reset/:token", controllers.newPassword, responseHandler);
 
 module.exports = router;

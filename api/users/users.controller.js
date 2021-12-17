@@ -101,10 +101,34 @@ async function forgotPassword(req, res, next) {
   return next();
 }
 
+async function newPassword(req, res, next) {
+  const { newPassword, confirmPassword } = req.body;
+  const { token } = req.params;
+
+  try {
+    const { email } = tokenDecrypt(token);
+    const user = await User.findOne({ email });
+
+    if (!user) return next(new Error("user invalid"));
+
+    if (newPassword !== confirmPassword)
+      return next(new Error("Password does match"));
+
+    user.hash = await encryptPassword(newPassword);
+
+    await user.save();
+  } catch (e) {
+    return next(new Error("something went wrong"));
+  }
+
+  return next();
+}
+
 module.exports = {
   signup,
   login,
   getUserDetails,
   verifyToken,
   forgotPassword,
+  newPassword,
 };
